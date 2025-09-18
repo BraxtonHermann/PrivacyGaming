@@ -1,0 +1,50 @@
+        const CONTRACT_ABI = [
+            {
+                "inputs": [
+                    {"internalType": "string", "name": "_name", "type": "string"},
+                    {"internalType": "string", "name": "_gameType", "type": "string"},
+                    {"internalType": "uint8", "name": "_maxPlayers", "type": "uint8"},
+                    {"internalType": "string", "name": "_difficulty", "type": "string"},
+                    {"internalType": "uint256", "name": "_stake", "type": "uint256"}
+                ],
+                "name": "createGameRoom",
+                "outputs": [],
+                "stateMutability": "nonpayable",
+                "type": "function"
+            },
+            {
+                "inputs": [
+                    {"internalType": "uint256", "name": "_gameId", "type": "uint256"},
+                    {"internalType": "bool", "name": "_isAnonymous", "type": "bool"},
+                    {"internalType": "bool", "name": "_maxPrivacy", "type": "bool"}
+                ],
+                "name": "joinGameRoom",
+                "outputs": [],
+                "stateMutability": "payable",
+                "type": "function"
+            },
+            {
+                "inputs": [],
+                "name": "getActiveGames",
+                "outputs": [
+                    {
+                        "components": [
+                            {"internalType": "uint256", "name": "gameId", "type": "uint256"},
+                            {"internalType": "string", "name": "name", "type": "string"},
+                            {"internalType": "string", "name": "gameType", "type": "string"},
+                            {"internalType": "uint8", "name": "maxPlayers", "type": "uint8"},
+                            {"internalType": "uint8", "name": "currentPlayers", "type": "uint8"},
+                            {"internalType": "string", "name": "difficulty", "type": "string"},
+                            {"internalType": "uint256", "name": "stake", "type": "uint256"},
+                            {"internalType": "address", "name": "creator", "type": "address"},
+                            {"internalType": "bool", "name": "isActive", "type": "bool"}
+                        ],
+                        "internalType": "struct PrivacyGaming.GameRoom[]",
+                        "name": "",
+                        "type": "tuple[]"
+                    }
+                ],
+                "stateMutability": "view",
+                "type": "function"
+            }
+        ];

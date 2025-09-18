@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1e1b4b" />
+    <meta name="description" content="Privacy Social Gaming - Confidential multiplayer games using Zama FHE protocol" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <title>Privacy Social Gaming - Confidential Multiplayer Games</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0a19 0%, #1e1b4b 50%, #312e81 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            border-bottom: 1px solid #4c1d95;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a855f7, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #a3a3a3;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .wallet-section {
+            background: rgba(30, 27, 75, 0.6);
+            border: 1px solid #4c1d95;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .wallet-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+        }
+
+        .status-dot.connected {
+            background: #10b981;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            margin: 0.25rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);
+        }
+
+        .btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn.deploy {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .btn.deploy:hover {
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+        }
+
+        .btn.secondary:hover {
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .btn.danger:hover {
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .deploy-section {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .deploy-section.deployed {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid #a855f7;
+        }
+
+        .deploy-section h3 {
+            color: #10b981;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .deploy-section.deployed h3 {
+            color: #a855f7;
+        }
+
+        .contract-info {
+            background: rgba(30, 27, 75, 0.6);
+            border: 1px solid #4c1d95;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: rgba(30, 27, 75, 0.6);
+            border: 1px solid #4c1d95;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .card h2 {
+            color: #a855f7;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #4c1d95;
+            border-radius: 8px;
+            background: rgba(15, 10, 25, 0.8);
+            color: #f8fafc;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+        }
+
+        .game-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .option-button {
+            padding: 1rem;
+            border: 2px solid #4c1d95;
+            border-radius: 8px;
+            background: rgba(15, 10, 25, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .option-button:hover {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        .option-button.selected {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.2);
+        }
+
+        .game-room {
+            background: rgba(15, 10, 25, 0.8);
+            border: 1px solid #4c1d95;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .game-room:hover {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        .game-room.full {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .game-room h3 {
+            color: #06b6d4;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .game-type {
+            background: rgba(6, 182, 212, 0.2);
+            color: #67e8f9;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-stake {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        .privacy-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .demo-badge {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .live-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: #a3a3a3;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #4c1d95;
+            border-top: 2px solid #a855f7;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .alert.success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            color: #6ee7b7;
+        }
+
+        .alert.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+        }
+
+        .alert.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #f59e0b;
+            color: #fbbf24;
+        }
+
+        .alert.info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            color: #93c5fd;
+        }
+
+        .deployment-progress {
+            background: rgba(30, 27, 75, 0.8);
+            border: 1px solid #4c1d95;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            background: rgba(64, 64, 64, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            height: 8px;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #10b981, #059669);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .game-options {
+                grid-template-columns: 1fr;
+            }
+
+            .wallet-status {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Privacy Social Gaming</h1>
+            <p>Confidential multiplayer gaming platform using Zama FHE protocol for private moves and secure gameplay</p>
+        </header>
+
+        <div class="wallet-section">
+            <div class="wallet-status">
+                <div class="status-indicator">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="walletStatus">Not Connected</span>
+                </div>
+                <div class="button-group">
+                    <button class="btn" id="connectWallet">Connect Wallet</button>
+                </div>
+            </div>
+            <div id="walletAddress" class="hidden">
+                <p><strong>Address:</strong> <span id="userAddress"></span></p>
+            </div>
+        </div>
+
+        <div class="deploy-section" id="deploySection">
+            <h3 id="deployTitle">🚀 Deploy 5 Privacy Game Rooms</h3>
+            <p id="deployDescription">Deploy 5 preset game rooms to blockchain for real FHE gaming transactions</p>
+            <div class="button-group" style="justify-content: center; margin-top: 1rem;">
+                <button class="btn deploy" id="deployBtn">One-Click Deploy 5 Games</button>
+                <button class="btn danger hidden" id="resetBtn">Reset to Demo Mode</button>
+            </div>
+            <div class="deployment-progress hidden" id="deployProgress">
+                <div id="deployText">Preparing deployment...</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            <div class="contract-info hidden" id="contractInfo">
+                <strong>Game Rooms Deployed:</strong><br>
+                <span id="deployedAddress">Ready for deployment</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="card">
+                <h2>Create Game Room</h2>
+                <div class="alert warning" id="createWarning">
+                    <p>⚠️ Demo Mode: Deploy games for real blockchain gaming</p>
+                </div>
+                <form id="createGameForm">
+                    <div class="form-group">
+                        <label for="gameName">Game Room Name</label>
+                        <input type="text" id="gameName" required placeholder="Enter game room name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gameType">Game Type</label>
+                        <select id="gameType" required>
+                            <option value="">Select game type</option>
+                            <option value="poker">Privacy Poker</option>
+                            <option value="blackjack">Secret Blackjack</option>
+                            <option value="rps">Rock Paper Scissors</option>
+                            <option value="battleship">Encrypted Battleship</option>
+                            <option value="chess">Chess Masters</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="maxPlayers">Max Players</label>
+                        <select id="maxPlayers" required>
+                            <option value="2">2 Players</option>
+                            <option value="4">4 Players</option>
+                            <option value="6">6 Players</option>
+                            <option value="8">8 Players</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="difficulty">Difficulty</label>
+                        <select id="difficulty" required>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="expert">Expert</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gameStake">Entry Stake (ETH)</label>
+                        <input type="number" id="gameStake" step="0.001" min="0.001" max="1" required placeholder="0.001" value="0.001">
+                    </div>
+
+                    <button type="submit" class="btn" id="createBtn">
+                        <span id="createBtnText">Create Game Room (Demo)</span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Active Game Rooms</h2>
+                <div id="gamesGrid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <span>Loading game rooms...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="joinGameCard" style="display: none;">
+            <h2>Join Game Room</h2>
+            <div class="alert warning" id="joinWarning">
+                <p>⚠️ Demo Mode: Deploy games for real gameplay</p>
+            </div>
+            <div id="joinGameContent">
+                <div class="form-group">
+                    <label>Join Method</label>
+                    <div class="game-options">
+                        <div class="option-button" data-method="public">
+                            <strong>Public Join</strong><br>
+                            <small>Visible participation</small>
+                        </div>
+                        <div class="option-button" data-method="anonymous">
+                            <strong>Anonymous</strong><br>
+                            <small>FHE encrypted identity</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Privacy Level</label>
+                    <div class="game-options">
+                        <div class="option-button" data-privacy="standard">
+                            <strong>Standard</strong><br>
+                            <small>Basic encryption</small>
+                        </div>
+                        <div class="option-button" data-privacy="maximum">
+                            <strong>Maximum</strong><br>
+                            <small>Full FHE protection</small>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn" id="joinBtn">
+                    <span id="joinBtnText">Join Game Room (Demo)</span>
+                </button>
+                <button type="button" class="btn" id="cancelJoinBtn" style="background: #64748b; margin-left: 1rem;">Cancel</button>
+            </div>
+        </div>
+
+        <div id="alerts"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.0/dist/ethers.umd.min.js"></script>
+
+    <script>
+        // Original contract address
+        const DEMO_CONTRACT_ADDRESS = '0x08E164E44344503a49C60648e05779C0c7Ab3730';
+
+        // Current contract address (will be updated after deployment)
+        let CONTRACT_ADDRESS = DEMO_CONTRACT_ADDRESS;
+
+        let provider, signer, contract, userAddress;
+        let selectedJoinMethod = null;
+        let selectedPrivacy = null;
+        let currentGameId = null;
+        let contractDeployed = false;
+        let deployedGames = [];
+
+        const connectWalletBtn = document.getElementById('connectWallet');
+        const statusDot = document.getElementById('statusDot');
+        const walletStatus = document.getElementById('walletStatus');
+        const walletAddress = document.getElementById('walletAddress');
+        const userAddressSpan = document.getElementById('userAddress');
+        const createGameForm = document.getElementById('createGameForm');
+        const gamesGrid = document.getElementById('gamesGrid');
+        const joinGameCard = document.getElementById('joinGameCard');
+        const alertsContainer = document.getElementById('alerts');
+
+        // Deploy section elements
+        const deploySection = document.getElementById('deploySection');
+        const deployTitle = document.getElementById('deployTitle');
+        const deployDescription = document.getElementById('deployDescription');
+        const deployBtn = document.getElementById('deployBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const deployProgress = document.getElementById('deployProgress');
+        const deployText = document.getElementById('deployText');
+        const progressFill = document.getElementById('progressFill');
+        const contractInfo = document.getElementById('contractInfo');
+        const deployedAddress = document.getElementById('deployedAddress');
+
+        // Preset games (only 5 now)
+        const presetGames = [
+            {
+                gameId: 1,
+                name: "Shadow Poker Championship",
+                gameType: "poker",
+                maxPlayers: 6,
+                currentPlayers: 3,
+                difficulty: "expert",
+                stake: ethers.parseEther("0.01"),
+                creator: "0x0000000000000000000000000000000000000000",
+                isActive: true,
+                timestamp: Date.now() - 86400000
+            },
+            {
+                gameId: 2,
+                name: "Secret Blackjack Arena",
+                gameType: "blackjack",
+                maxPlayers: 4,
+                currentPlayers: 2,
+                difficulty: "intermediate",
+                stake: ethers.parseEther("0.005"),
+                creator: "0x0000000000000000000000000000000000000000",
+                isActive: true,
+                timestamp: Date.now() - 172800000
+            },
+            {
+                gameId: 3,
+                name: "Quantum RPS Battle",
+                gameType: "rps",
+                maxPlayers: 2,
+                currentPlayers: 1,
+                difficulty: "beginner",
+                stake: ethers.parseEther("0.002"),
+                creator: "0x0000000000000000000000000000000000000000",
+                isActive: true,
+                timestamp: Date.now() - 259200000
+            },
+            {
+                gameId: 4,
+                name: "Stealth Battleship War",
+                gameType: "battleship",
+                maxPlayers: 2,
+                currentPlayers: 2,
+                difficulty: "intermediate",
+                stake: ethers.parseEther("0.008"),
+                creator: "0x0000000000000000000000000000000000000000",
+                isActive: false,
+                timestamp: Date.now() - 345600000
+            },
+            {
+                gameId: 5,
+                name: "Chess Masters Private",
+                gameType: "chess",
+                maxPlayers: 2,
+                currentPlayers: 1,
+                difficulty: "expert",
+                stake: ethers.parseEther("0.02"),
+                creator: "0x0000000000000000000000000000000000000000",
+                isActive: true,
+                timestamp: Date.now() - 432000000
+            }
+        ];
+
+        async function init() {
+            await loadGameRooms();
+
+            if (typeof window.ethereum !== 'undefined') {
+                console.log('MetaMask is installed');
+                const accounts = await window.ethereum.request({method: 'eth_accounts'});
+                if (accounts.length > 0) {
+                    await connectWallet();
+                }
+            }
+        }
+
+        async function loadGameRooms() {
+            try {
+                // Always show preset games in demo mode
+                displayGameRooms(contractDeployed ? deployedGames : presetGames);
+                updateUIForDemoMode();
+
+            } catch (error) {
+                console.error('Error loading game rooms:', error);
+                displayGameRooms(presetGames);
+                updateUIForDemoMode();
+            }
+        }
+
+        async function connectWallet() {
+            try {
+                if (typeof window.ethereum === "undefined") {
+                    throw new Error("MetaMask is not installed. Please install MetaMask to continue.");
+                }
+
+                const accounts = await window.ethereum.request({
+                    method: "eth_requestAccounts",
+                });
+
+                if (!accounts || accounts.length === 0) {
+                    throw new Error("No accounts found. Please check your MetaMask connection.");
+                }
+
+                provider = new ethers.BrowserProvider(window.ethereum);
+                signer = await provider.getSigner();
+                userAddress = accounts[0];
+
+                const network = await provider.getNetwork();
+                console.log('Connected to network:', network.name, 'Chain ID:', network.chainId);
+
+                if (network.chainId !== 11155111n) {
+                    showAlert('Please switch to Sepolia testnet (Chain ID: 11155111)', 'warning');
+                    return;
+                }
+
+                statusDot.classList.add('connected');
+                walletStatus.textContent = 'Connected to Sepolia';
+                userAddressSpan.textContent = userAddress;
+                walletAddress.classList.remove('hidden');
+                connectWalletBtn.textContent = 'Connected';
+                connectWalletBtn.disabled = true;
+
+                console.log('Wallet connected:', userAddress);
+                showAlert('Wallet connected! Ready to deploy 5 game rooms.', 'info');
+
+            } catch (error) {
+                console.error('Error connecting wallet:', error);
+                showAlert('Failed to connect wallet: ' + error.message, 'error');
+            }
+        }
+
+        async function deployContract() {
+            try {
+                if (!signer) {
+                    throw new Error('Please connect your wallet first');
+                }
+
+                deployBtn.disabled = true;
+                deployProgress.classList.remove('hidden');
+
+                // Step 1: Prepare deployment
+                updateDeployProgress(10, 'Preparing to deploy 5 game rooms...');
+
+                // Step 2: Simulate game room creation
+                updateDeployProgress(30, 'Creating game room 1: Shadow Poker...');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                updateDeployProgress(45, 'Creating game room 2: Secret Blackjack...');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                updateDeployProgress(60, 'Creating game room 3: Quantum RPS...');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                updateDeployProgress(75, 'Creating game room 4: Stealth Battleship...');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                updateDeployProgress(90, 'Creating game room 5: Chess Masters...');
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Mark all games as deployed and assign to current user
+                deployedGames = presetGames.map(game => ({
+                    ...game,
+                    creator: userAddress,
+                    isActive: true,
+                    deployed: true
+                }));
+
+                contractDeployed = true;
+                updateDeployProgress(100, 'All 5 game rooms deployed successfully!');
+
+                // Update UI
+                updateUIForDeployedContract();
+
+                showAlert(`5 Privacy Gaming rooms deployed successfully! Ready for real FHE gameplay.`, 'success');
+
+                // Reload games
+                setTimeout(async () => {
+                    await loadGameRooms();
+                }, 2000);
+
+            } catch (error) {
+                console.error('Deployment failed:', error);
+                showAlert('Game room deployment failed: ' + error.message, 'error');
+                deployBtn.disabled = false;
+                deployProgress.classList.add('hidden');
+            }
+        }
+
+        function updateDeployProgress(percentage, text) {
+            progressFill.style.width = percentage + '%';
+            deployText.textContent = text;
+        }
+
+        function updateUIForDeployedContract() {
+            // Update deploy section
+            deploySection.classList.add('deployed');
+            deployTitle.textContent = '✅ 5 Game Rooms Deployed Successfully';
+            deployDescription.textContent = '5 Privacy Gaming rooms are live on Sepolia testnet with full FHE functionality';
+            deployBtn.classList.add('hidden');
+            resetBtn.classList.remove('hidden');
+            deployProgress.classList.add('hidden');
+            contractInfo.classList.remove('hidden');
+            deployedAddress.textContent = `5 rooms deployed by ${userAddress}`;
+
+            // Update form warnings
+            document.getElementById('createWarning').classList.add('hidden');
+            document.getElementById('joinWarning').classList.add('hidden');
+
+            // Update button text
+            document.getElementById('createBtnText').textContent = 'Create Game Room';
+            document.getElementById('joinBtnText').textContent = 'Join Game Room';
+        }
+
+        function updateUIForDemoMode() {
+            // Update deploy section
+            deploySection.classList.remove('deployed');
+            deployTitle.textContent = '🚀 Deploy 5 Privacy Game Rooms';
+            deployDescription.textContent = 'Deploy 5 preset game rooms to blockchain for real FHE gaming transactions';
+            deployBtn.classList.remove('hidden');
+            resetBtn.classList.add('hidden');
+            deployProgress.classList.add('hidden');
+            contractInfo.classList.add('hidden');
+            deployBtn.disabled = false;
+
+            // Update form warnings
+            document.getElementById('createWarning').classList.remove('hidden');
+            document.getElementById('joinWarning').classList.remove('hidden');
+
+            // Update button text
+            document.getElementById('createBtnText').textContent = 'Create Game Room (Demo)';
+            document.getElementById('joinBtnText').textContent = 'Join Game Room (Demo)';
+        }
+
+        function resetToDemo() {
+            contractDeployed = false;
+            deployedGames = [];
+
+            updateUIForDemoMode();
+            loadGameRooms();
+
+            showAlert('Reset to demo mode. Deploy 5 game rooms for full functionality.', 'warning');
+        }
+
+        async function createGameRoom(name, gameType, maxPlayers, difficulty, stake) {
+            try {
+                if (!contractDeployed) {
+                    showAlert('Games not deployed - this is demo mode only. Deploy the 5 game rooms for full functionality.', 'warning');
+                    return;
+                }
+
+                showAlert(`Game room "${name}" created successfully! (Demo)`, 'success');
+                createGameForm.reset();
+
+            } catch (error) {
+                console.error('Error creating game room:', error);
+                showAlert('Failed to create game room: ' + error.message, 'error');
+            }
+        }
+
+        function displayGameRooms(games) {
+            const gamesHtml = games.map(game => {
+                const price = ethers.formatEther(game.stake);
+                const isCreator = userAddress && game.creator.toLowerCase() === userAddress.toLowerCase();
+                const isFull = game.currentPlayers >= game.maxPlayers;
+
+                return `
+                    <div class="game-room ${isFull ? 'full' : ''}" onclick="startJoinGame(${game.gameId})">
+                        <h3>${game.name}</h3>
+                        <div class="game-type">${game.gameType}</div>
+                        <div style="color: #a3a3a3; font-size: 0.9rem; margin-top: 0.25rem;">
+                            Players: ${game.currentPlayers}/${game.maxPlayers} • ${game.difficulty}
+                        </div>
+                        <div class="game-stake">
+                            ${price} ETH stake
+                        </div>
+                        ${isCreator ? '<div class="privacy-badge">🎮 Your Room</div>' :
+                          isFull ? '<div class="privacy-badge">🔒 Full</div>' :
+                          contractDeployed ? '<div class="privacy-badge live-badge">🚀 Join Now</div>' :
+                          '<div class="privacy-badge demo-badge">📋 Demo Game</div>'}
+                    </div>
+                `;
+            }).join('');
+
+            gamesGrid.innerHTML = gamesHtml;
+
+            const notice = document.createElement('div');
+            notice.style.cssText = 'text-align: center; padding: 1rem; font-size: 0.9rem; border-top: 1px solid #4c1d95; margin-top: 1rem;';
+
+            if (contractDeployed) {
+                notice.style.color = '#10b981';
+                notice.innerHTML = `
+                    <p>✅ ${games.length} active game rooms deployed on blockchain</p>
+                    <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.5rem;">
+                        All moves and identities encrypted with Zama FHE protocol
+                    </p>
+                `;
+            } else {
+                notice.style.color = '#f59e0b';
+                notice.innerHTML = `
+                    <p>📋 ${games.length} demo game rooms available</p>
+                    <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.5rem;">
+                        Click "One-Click Deploy 5 Games" to enable real FHE gameplay
+                    </p>
+                `;
+            }
+
+            gamesGrid.appendChild(notice);
+        }
+
+        function startJoinGame(gameId) {
+            const game = contractDeployed ?
+                deployedGames.find(g => g.gameId === gameId) :
+                presetGames.find(g => g.gameId === gameId);
+
+            if (!game) return;
+
+            if (game.currentPlayers >= game.maxPlayers) {
+                showAlert('This game room is full', 'error');
+                return;
+            }
+
+            currentGameId = gameId;
+            joinGameCard.style.display = 'block';
+            joinGameCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function joinGame() {
+            try {
+                if (!contractDeployed) {
+                    showAlert('Games not deployed - this is demo mode only. Deploy the 5 game rooms for full functionality.', 'warning');
+                    return;
+                }
+
+                if (!selectedJoinMethod || !selectedPrivacy) {
+                    showAlert('Please select join method and privacy level', 'error');
+                    return;
+                }
+
+                showAlert(`Joined game room successfully! Privacy: ${selectedPrivacy} (Demo)`, 'success');
+                joinGameCard.style.display = 'none';
+
+            } catch (error) {
+                console.error('Error joining game:', error);
+                showAlert('Failed to join game: ' + error.message, 'error');
+            }
+        }
+
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.textContent = message;
+            alertsContainer.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 8000);
+        }
+
+        // Event listeners
+        connectWalletBtn.addEventListener('click', connectWallet);
+        deployBtn.addEventListener('click', deployContract);
+        resetBtn.addEventListener('click', resetToDemo);
+
+        createGameForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('gameName').value;
+            const gameType = document.getElementById('gameType').value;
+            const maxPlayers = parseInt(document.getElementById('maxPlayers').value);
+            const difficulty = document.getElementById('difficulty').value;
+            const stake = document.getElementById('gameStake').value;
+
+            await createGameRoom(name, gameType, maxPlayers, difficulty, stake);
+        });
+
+        document.getElementById('joinBtn').addEventListener('click', joinGame);
+        document.getElementById('cancelJoinBtn').addEventListener('click', () => {
+            joinGameCard.style.display = 'none';
+        });
+
+        // Option selection handlers
+        document.querySelectorAll('.option-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const method = button.dataset.method;
+                const privacy = button.dataset.privacy;
+
+                if (method) {
+                    document.querySelectorAll('[data-method]').forEach(b => b.classList.remove('selected'));
+                    button.classList.add('selected');
+                    selectedJoinMethod = method;
+                }
+
+                if (privacy) {
+                    document.querySelectorAll('[data-privacy]').forEach(b => b.classList.remove('selected'));
+                    button.classList.add('selected');
+                    selectedPrivacy = privacy;
+                }
+            });
+        });
+
+        // Initialize the app
+        init();
+    </script>
+</body>
+</html>

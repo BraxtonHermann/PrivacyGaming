@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Privacy Social Gaming - FHE Gaming Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0a19 0%, #1e1b4b 50%, #312e81 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .header { text-align: center; margin-bottom: 3rem; padding: 2rem 0; border-bottom: 1px solid #4c1d95; }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a855f7, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+        .btn {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.25rem;
+        }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3); }
+        .btn.deploy { background: linear-gradient(135deg, #10b981, #059669); }
+        .card {
+            background: rgba(30, 27, 75, 0.6);
+            border: 1px solid #4c1d95;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        .alert.success { background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #6ee7b7; }
+        .alert.error { background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5; }
+        .alert.warning { background: rgba(245, 158, 11, 0.1); border: 1px solid #f59e0b; color: #fbbf24; }
+        .alert.info { background: rgba(59, 130, 246, 0.1); border: 1px solid #3b82f6; color: #93c5fd; }
+        .game-room {
+            background: rgba(15, 10, 25, 0.8);
+            border: 1px solid #4c1d95;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .game-room h3 { color: #06b6d4; margin-bottom: 0.5rem; }
+        .game-type {
+            background: rgba(6, 182, 212, 0.2);
+            color: #67e8f9;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+        .game-stake { color: #10b981; font-weight: 600; margin-top: 0.5rem; }
+        .wallet-status { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .status-dot { width: 12px; height: 12px; border-radius: 50%; background: #ef4444; margin-right: 0.5rem; }
+        .status-dot.connected { background: #10b981; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Privacy Social Gaming</h1>
+            <p>Confidential multiplayer gaming platform using Zama FHE protocol</p>
+        </header>
+
+        <div class="card">
+            <div class="wallet-status">
+                <div style="display: flex; align-items: center;">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="walletStatus">Not Connected</span>
+                </div>
+                <button class="btn" id="connectWallet">Connect Wallet</button>
+            </div>
+            <div id="walletAddress" class="hidden">
+                <p><strong>Address:</strong> <span id="userAddress"></span></p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 style="color: #a855f7; margin-bottom: 1rem;">🚀 Connect to Privacy Gaming Contract</h2>
+            <p style="margin-bottom: 1rem;">Connect to the Privacy Gaming smart contract on Sepolia testnet</p>
+            <button class="btn deploy" id="deployBtn">Connect to Contract</button>
+            <div id="contractInfo" class="hidden" style="margin-top: 1rem;">
+                <div class="alert success">
+                    <strong>Connected to Contract:</strong><br>
+                    <span id="contractAddress"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 style="color: #a855f7; margin-bottom: 1rem;">Active Game Rooms</h2>
+            <div id="gamesGrid">
+                <div id="gamesList"></div>
+            </div>
+        </div>
+
+        <div id="alerts"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.0/dist/ethers.umd.min.js"></script>
+    <script>
+        const CONTRACT_ADDRESS = '0x08E164E44344503a49C60648e05779C0c7Ab3730';
+        const CONTRACT_ABI = [
+            "function createGameRoom(string _name, string _gameType, uint8 _maxPlayers, string _difficulty, uint256 _stake) external",
+            "function joinGameRoom(uint256 _gameId, bool _isAnonymous, bool _maxPrivacy) external payable",
+            "function getActiveGames() external view returns (uint256[], string[], string[], uint8[], uint8[], string[], uint256[], address[], bool[])",
+            "function owner() external view returns (address)",
+            "function getContractBalance() external view returns (uint256)"
+        ];
+
+        let provider, signer, contract, userAddress;
+        let contractConnected = false;
+
+        const presetGames = [
+            { name: "Shadow Poker Championship", gameType: "poker", players: "3/6", stake: "0.01 ETH" },
+            { name: "Secret Blackjack Arena", gameType: "blackjack", players: "2/4", stake: "0.005 ETH" },
+            { name: "Quantum RPS Battle", gameType: "rps", players: "1/2", stake: "0.002 ETH" },
+            { name: "Stealth Battleship War", gameType: "battleship", players: "2/2", stake: "0.008 ETH" },
+            { name: "Chess Masters Private", gameType: "chess", players: "1/2", stake: "0.02 ETH" }
+        ];
+
+        async function connectWallet() {
+            try {
+                if (!window.ethereum) {
+                    throw new Error('MetaMask not found');
+                }
+
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                provider = new ethers.BrowserProvider(window.ethereum);
+                signer = await provider.getSigner();
+                userAddress = accounts[0];
+
+                const network = await provider.getNetwork();
+                if (network.chainId !== 11155111n) {
+                    showAlert('Please switch to Sepolia testnet', 'warning');
+                    return;
+                }
+
+                document.getElementById('statusDot').classList.add('connected');
+                document.getElementById('walletStatus').textContent = 'Connected to Sepolia';
+                document.getElementById('userAddress').textContent = userAddress;
+                document.getElementById('walletAddress').classList.remove('hidden');
+                document.getElementById('connectWallet').textContent = 'Connected';
+
+                showAlert('Wallet connected! Ready to connect to contract.', 'success');
+            } catch (error) {
+                showAlert('Failed to connect wallet: ' + error.message, 'error');
+            }
+        }
+
+        async function connectToContract() {
+            try {
+                if (!signer) {
+                    throw new Error('Please connect wallet first');
+                }
+
+                showAlert('Connecting to Privacy Gaming contract...', 'info');
+
+                contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
+
+                // Test connection
+                try {
+                    const owner = await contract.owner();
+                    console.log('Contract owner:', owner);
+                    contractConnected = true;
+
+                    document.getElementById('contractAddress').textContent = CONTRACT_ADDRESS;
+                    document.getElementById('contractInfo').classList.remove('hidden');
+                    document.getElementById('deployBtn').textContent = 'Connected to Contract';
+                    document.getElementById('deployBtn').disabled = true;
+
+                    showAlert('Successfully connected to Privacy Gaming contract!', 'success');
+                    loadGames();
+                } catch (contractError) {
+                    throw new Error('Contract not found at this address');
+                }
+            } catch (error) {
+                showAlert('Connection failed: ' + error.message, 'error');
+            }
+        }
+
+        function loadGames() {
+            const gamesList = document.getElementById('gamesList');
+            gamesList.innerHTML = presetGames.map(game => `
+                <div class="game-room">
+                    <h3>${game.name}</h3>
+                    <div class="game-type">${game.gameType}</div>
+                    <div style="color: #a3a3a3; margin: 0.5rem 0;">Players: ${game.players}</div>
+                    <div class="game-stake">${game.stake} stake</div>
+                    ${contractConnected ?
+                        '<div style="color: #10b981; margin-top: 0.5rem;">🚀 Ready to Play</div>' :
+                        '<div style="color: #f59e0b; margin-top: 0.5rem;">📋 Demo Mode</div>'
+                    }
+                </div>
+            `).join('');
+
+            if (contractConnected) {
+                gamesList.innerHTML += `
+                    <div style="text-align: center; padding: 1rem; color: #10b981; border-top: 1px solid #4c1d95; margin-top: 1rem;">
+                        ✅ Connected to Privacy Gaming contract on Sepolia testnet<br>
+                        <small style="color: #64748b;">All games support FHE encryption for private moves</small>
+                    </div>
+                `;
+            } else {
+                gamesList.innerHTML += `
+                    <div style="text-align: center; padding: 1rem; color: #f59e0b; border-top: 1px solid #4c1d95; margin-top: 1rem;">
+                        📋 Demo mode - Connect to contract for full functionality
+                    </div>
+                `;
+            }
+        }
+
+        function showAlert(message, type) {
+            const alertsContainer = document.getElementById('alerts');
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.textContent = message;
+            alertsContainer.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+        document.getElementById('connectWallet').addEventListener('click', connectWallet);
+        document.getElementById('deployBtn').addEventListener('click', connectToContract);
+
+        // Initialize
+        loadGames();
+    </script>
+</body>
+</html>
