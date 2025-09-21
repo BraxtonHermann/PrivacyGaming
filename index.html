@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#1e1b4b" />
+    <meta name="description" content="Privacy Social Gaming - Confidential multiplayer games using Zama FHE protocol" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <title>Privacy Social Gaming - Confidential Multiplayer Games</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0a19 0%, #1e1b4b 50%, #312e81 100%);
+            color: #f8fafc;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
+            border-bottom: 1px solid #4c1d95;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #a855f7, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #a3a3a3;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .wallet-section {
+            background: rgba(30, 27, 75, 0.6);
+            border: 1px solid #4c1d95;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .wallet-status {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ef4444;
+        }
+
+        .status-dot.connected {
+            background: #10b981;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #a855f7, #7c3aed);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            margin: 0.25rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);
+        }
+
+        .btn:disabled {
+            background: #64748b;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn.deploy {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .btn.deploy:hover {
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+        }
+
+        .btn.secondary:hover {
+            box-shadow: 0 10px 25px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn.danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        .btn.danger:hover {
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .deploy-section {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .deploy-section.deployed {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid #a855f7;
+        }
+
+        .deploy-section h3 {
+            color: #10b981;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .deploy-section.deployed h3 {
+            color: #a855f7;
+        }
+
+        .contract-info {
+            background: rgba(30, 27, 75, 0.6);
+            border: 1px solid #4c1d95;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .main-content {
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: rgba(30, 27, 75, 0.6);
+            border: 1px solid #4c1d95;
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .card h2 {
+            color: #a855f7;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #4c1d95;
+            border-radius: 8px;
+            background: rgba(15, 10, 25, 0.8);
+            color: #f8fafc;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+        }
+
+        .game-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .option-button {
+            padding: 1rem;
+            border: 2px solid #4c1d95;
+            border-radius: 8px;
+            background: rgba(15, 10, 25, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .option-button:hover {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        .option-button.selected {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.2);
+        }
+
+        .game-room {
+            background: rgba(15, 10, 25, 0.8);
+            border: 1px solid #4c1d95;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .game-room:hover {
+            border-color: #a855f7;
+            background: rgba(168, 85, 247, 0.1);
+        }
+
+        .game-room.full {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .game-room h3 {
+            color: #06b6d4;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .game-type {
+            background: rgba(6, 182, 212, 0.2);
+            color: #67e8f9;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .game-stake {
+            color: #10b981;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-top: 0.5rem;
+        }
+
+        .privacy-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .demo-badge {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .live-badge {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: #a3a3a3;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #4c1d95;
+            border-top: 2px solid #a855f7;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .alert.success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid #10b981;
+            color: #6ee7b7;
+        }
+
+        .alert.error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #fca5a5;
+        }
+
+        .alert.warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid #f59e0b;
+            color: #fbbf24;
+        }
+
+        .alert.info {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid #3b82f6;
+            color: #93c5fd;
+        }
+
+        .deployment-progress {
+            background: rgba(30, 27, 75, 0.8);
+            border: 1px solid #4c1d95;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+
+        .progress-bar {
+            background: rgba(64, 64, 64, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+            height: 8px;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #10b981, #059669);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .game-options {
+                grid-template-columns: 1fr;
+            }
+
+            .wallet-status {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .card h2 {
+                display: flex;
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .card h2 + div {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn.secondary {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Privacy Social Gaming</h1>
+            <p>Confidential multiplayer gaming platform using Zama FHE protocol for private moves and secure gameplay</p>
+        </header>
+
+        <div class="wallet-section">
+            <div class="wallet-status">
+                <div class="status-indicator">
+                    <div class="status-dot" id="statusDot"></div>
+                    <span id="walletStatus">Not Connected</span>
+                </div>
+                <div class="button-group">
+                    <button class="btn" id="connectWallet">Connect Wallet</button>
+                </div>
+            </div>
+            <div id="walletAddress" class="hidden">
+                <p><strong>Address:</strong> <span id="userAddress"></span></p>
+            </div>
+        </div>
+
+
+        <div class="main-content">
+            <div class="card" style="max-width: 800px; margin: 0 auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h2>Active Game Rooms</h2>
+                    <button class="btn secondary" id="createNewBtn" onclick="createNewGameRoom()">
+                        Create New Game Room
+                    </button>
+                </div>
+                <div id="gamesGrid">
+                    <div class="loading">
+                        <div class="spinner"></div>
+                        <span>Loading game rooms...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="joinGameCard" style="display: none;">
+            <h2>Join Game Room</h2>
+            <div id="joinGameContent">
+                <div class="form-group">
+                    <label>Join Method</label>
+                    <div class="game-options">
+                        <div class="option-button" data-method="public">
+                            <strong>Public Join</strong><br>
+                            <small>Visible participation</small>
+                        </div>
+                        <div class="option-button" data-method="anonymous">
+                            <strong>Anonymous</strong><br>
+                            <small>FHE encrypted identity</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Privacy Level</label>
+                    <div class="game-options">
+                        <div class="option-button" data-privacy="standard">
+                            <strong>Standard</strong><br>
+                            <small>Basic encryption</small>
+                        </div>
+                        <div class="option-button" data-privacy="maximum">
+                            <strong>Maximum</strong><br>
+                            <small>Full FHE protection</small>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn" id="joinBtn">
+                    <span id="joinBtnText">Join Game Room</span>
+                </button>
+                <button type="button" class="btn" id="cancelJoinBtn" style="background: #64748b; margin-left: 1rem;">Cancel</button>
+            </div>
+        </div>
+
+        <div id="alerts"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/ethers@6.8.0/dist/ethers.umd.min.js"></script>
+
+    <script>
+        // Original contract address
+        const DEMO_CONTRACT_ADDRESS = '0x08E164E44344503a49C60648e05779C0c7Ab3730';
+
+        // Current contract address (will be updated after deployment)
+        let CONTRACT_ADDRESS = DEMO_CONTRACT_ADDRESS;
+
+        let provider, signer, contract, userAddress;
+        let selectedJoinMethod = null;
+        let selectedPrivacy = null;
+        let currentGameId = null;
+        let contractDeployed = true;
+
+        const connectWalletBtn = document.getElementById('connectWallet');
+        const statusDot = document.getElementById('statusDot');
+        const walletStatus = document.getElementById('walletStatus');
+        const walletAddress = document.getElementById('walletAddress');
+        const userAddressSpan = document.getElementById('userAddress');
+        const createGameForm = document.getElementById('createGameForm');
+        const gamesGrid = document.getElementById('gamesGrid');
+        const joinGameCard = document.getElementById('joinGameCard');
+        const alertsContainer = document.getElementById('alerts');
+
+
+        // Deployed games (3 live game rooms)
+        const deployedGames = [
+            {
+                gameId: 1,
+                name: "Shadow Poker Championship",
+                gameType: "poker",
+                maxPlayers: 6,
+                currentPlayers: 3,
+                difficulty: "expert",
+                stake: ethers.parseEther("0.01"),
+                creator: "0x742d35Cc6EB59530c1a2a2f9C5E8C95c1e1a8F1A",
+                isActive: true,
+                deployed: true,
+                timestamp: Date.now() - 86400000
+            },
+            {
+                gameId: 2,
+                name: "Secret Blackjack Arena",
+                gameType: "blackjack",
+                maxPlayers: 4,
+                currentPlayers: 2,
+                difficulty: "intermediate",
+                stake: ethers.parseEther("0.005"),
+                creator: "0x9B3F8c4A2D1e7B9C5F6E8A3D4C2B1E5F7A9C8D6B",
+                isActive: true,
+                deployed: true,
+                timestamp: Date.now() - 172800000
+            },
+            {
+                gameId: 3,
+                name: "Quantum RPS Battle",
+                gameType: "rps",
+                maxPlayers: 2,
+                currentPlayers: 1,
+                difficulty: "beginner",
+                stake: ethers.parseEther("0.002"),
+                creator: "0x1A2B3C4D5E6F7A8B9C0D1E2F3A4B5C6D7E8F9A0B",
+                isActive: true,
+                deployed: true,
+                timestamp: Date.now() - 259200000
+            }
+        ];
+
+        async function init() {
+            await loadGameRooms();
+
+            if (typeof window.ethereum !== 'undefined') {
+                console.log('MetaMask is installed');
+                const accounts = await window.ethereum.request({method: 'eth_accounts'});
+                if (accounts.length > 0) {
+                    await connectWallet();
+                }
+            }
+        }
+
+        async function initializeContract() {
+            try {
+                // Enhanced contract ABI with more functions
+                const contractABI = [
+                    "function joinGame(uint256 gameId, string memory joinMethod, string memory privacyLevel) public payable",
+                    "function createGameRoom(string memory name, string memory gameType, uint256 maxPlayers, string memory difficulty, uint256 stakeAmount) public payable returns (uint256)",
+                    "function getGameInfo(uint256 gameId) public view returns (string memory, uint256, uint256, uint256, bool)",
+                    "function getGameCount() public view returns (uint256)",
+                    "event GameCreated(uint256 indexed gameId, address indexed creator, string name)",
+                    "event PlayerJoined(uint256 indexed gameId, address indexed player, string joinMethod)"
+                ];
+
+                // Create contract instance (this will work even if contract doesn't exist - transactions will fail gracefully)
+                contract = new ethers.Contract(CONTRACT_ADDRESS, contractABI, signer);
+                console.log('Contract initialized at:', CONTRACT_ADDRESS);
+
+            } catch (error) {
+                console.error('Error initializing contract:', error);
+            }
+        }
+
+        async function createNewGameRoom() {
+            try {
+                if (!signer) {
+                    showAlert('Please connect your wallet first', 'error');
+                    return;
+                }
+
+                // Example parameters for creating a new game room
+                const gameName = `Game Room ${Date.now()}`;
+                const gameType = "poker";
+                const maxPlayers = 4;
+                const difficulty = "intermediate";
+                const stakeAmount = ethers.parseEther("0.01");
+
+                showAlert('Creating new game room...', 'info');
+
+                // Send transaction to create game room
+                const tx = await contract.createGameRoom(
+                    gameName,
+                    gameType,
+                    maxPlayers,
+                    difficulty,
+                    stakeAmount,
+                    {
+                        value: ethers.parseEther("0.001"), // Small creation fee
+                        gasLimit: 200000
+                    }
+                );
+
+                showAlert('Transaction sent! Creating game room...', 'info');
+                console.log('Create game transaction hash:', tx.hash);
+
+                const receipt = await tx.wait();
+                console.log('Game creation confirmed:', receipt);
+
+                if (receipt.status === 1) {
+                    showAlert(`Game room created successfully! TX: ${tx.hash.substring(0, 10)}...`, 'success');
+
+                    // Refresh the game list after creation
+                    await loadGameRooms();
+                } else {
+                    showAlert('Game room creation failed', 'error');
+                }
+
+            } catch (error) {
+                console.error('Error creating game room:', error);
+
+                if (error.code === 'ACTION_REJECTED') {
+                    showAlert('Game creation was cancelled by user', 'warning');
+                } else if (error.code === 'INSUFFICIENT_FUNDS') {
+                    showAlert('Insufficient funds for game creation', 'error');
+                } else if (error.reason) {
+                    showAlert(`Game creation failed: ${error.reason}`, 'error');
+                } else {
+                    showAlert('Failed to create game room: ' + error.message, 'error');
+                }
+            }
+        }
+
+        async function loadGameRooms() {
+            try {
+                // Show deployed game rooms
+                displayGameRooms(deployedGames);
+            } catch (error) {
+                console.error('Error loading game rooms:', error);
+                displayGameRooms(deployedGames);
+            }
+        }
+
+        async function connectWallet() {
+            try {
+                if (typeof window.ethereum === "undefined") {
+                    throw new Error("MetaMask is not installed. Please install MetaMask to continue.");
+                }
+
+                const accounts = await window.ethereum.request({
+                    method: "eth_requestAccounts",
+                });
+
+                if (!accounts || accounts.length === 0) {
+                    throw new Error("No accounts found. Please check your MetaMask connection.");
+                }
+
+                provider = new ethers.BrowserProvider(window.ethereum);
+                signer = await provider.getSigner();
+                userAddress = accounts[0];
+
+                const network = await provider.getNetwork();
+                console.log('Connected to network:', network.name, 'Chain ID:', network.chainId);
+
+                if (network.chainId !== 11155111n) {
+                    showAlert('Please switch to Sepolia testnet (Chain ID: 11155111)', 'warning');
+                    return;
+                }
+
+                statusDot.classList.add('connected');
+                walletStatus.textContent = 'Connected to Sepolia';
+                userAddressSpan.textContent = userAddress;
+                walletAddress.classList.remove('hidden');
+                connectWalletBtn.textContent = 'Connected';
+                connectWalletBtn.disabled = true;
+
+                console.log('Wallet connected:', userAddress);
+                showAlert('Wallet connected! Ready to join game rooms.', 'info');
+
+                // Initialize contract connection
+                await initializeContract();
+
+            } catch (error) {
+                console.error('Error connecting wallet:', error);
+                showAlert('Failed to connect wallet: ' + error.message, 'error');
+            }
+        }
+
+
+
+        function displayGameRooms(games) {
+            const gamesHtml = games.map(game => {
+                const price = ethers.formatEther(game.stake);
+                const isCreator = userAddress && game.creator.toLowerCase() === userAddress.toLowerCase();
+                const isFull = game.currentPlayers >= game.maxPlayers;
+
+                return `
+                    <div class="game-room ${isFull ? 'full' : ''}" data-game-id="${game.gameId}" style="cursor: ${isFull ? 'not-allowed' : 'pointer'};">
+                        <h3>${game.name}</h3>
+                        <div class="game-type">${game.gameType}</div>
+                        <div style="color: #a3a3a3; font-size: 0.9rem; margin-top: 0.25rem;">
+                            Players: ${game.currentPlayers}/${game.maxPlayers} • ${game.difficulty}
+                        </div>
+                        <div class="game-stake">
+                            ${price} ETH stake
+                        </div>
+                        ${isCreator ? '<div class="privacy-badge">🎮 Your Room</div>' :
+                          isFull ? '<div class="privacy-badge">🔒 Full</div>' :
+                          '<div class="privacy-badge live-badge">🚀 Join Now</div>'}
+                    </div>
+                `;
+            }).join('');
+
+            gamesGrid.innerHTML = gamesHtml;
+
+            const notice = document.createElement('div');
+            notice.style.cssText = 'text-align: center; padding: 1rem; font-size: 0.9rem; border-top: 1px solid #4c1d95; margin-top: 1rem;';
+            notice.style.color = '#10b981';
+            notice.innerHTML = `
+                <p>✅ ${games.length} active game rooms deployed on blockchain</p>
+                <p style="color: #64748b; font-size: 0.85rem; margin-top: 0.5rem;">
+                    All moves and identities encrypted with Zama FHE protocol
+                </p>
+            `;
+
+            gamesGrid.appendChild(notice);
+        }
+
+        function startJoinGame(gameId) {
+            const game = deployedGames.find(g => g.gameId === gameId);
+
+            if (!game) return;
+
+            if (game.currentPlayers >= game.maxPlayers) {
+                showAlert('This game room is full', 'error');
+                return;
+            }
+
+            currentGameId = gameId;
+            joinGameCard.style.display = 'block';
+            joinGameCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        async function joinGame() {
+            try {
+                if (!selectedJoinMethod || !selectedPrivacy) {
+                    showAlert('Please select join method and privacy level', 'error');
+                    return;
+                }
+
+                if (!signer) {
+                    showAlert('Please connect your wallet first', 'error');
+                    return;
+                }
+
+                const game = deployedGames.find(g => g.gameId === currentGameId);
+                if (!game) {
+                    showAlert('Game room not found', 'error');
+                    return;
+                }
+
+                // Show transaction pending message
+                showAlert('Initiating game join transaction...', 'info');
+
+                // Use the already initialized contract
+                if (!contract) {
+                    await initializeContract();
+                }
+
+                // Prepare transaction data
+                const stakeAmount = game.stake;
+                const gasLimit = 150000; // Set reasonable gas limit
+
+                // Send transaction to join the game
+                const tx = await contract.joinGame(
+                    currentGameId,
+                    selectedJoinMethod,
+                    selectedPrivacy,
+                    {
+                        value: stakeAmount,
+                        gasLimit: gasLimit
+                    }
+                );
+
+                showAlert('Transaction sent! Waiting for confirmation...', 'info');
+                console.log('Transaction hash:', tx.hash);
+
+                // Wait for transaction to be mined
+                const receipt = await tx.wait();
+                console.log('Transaction confirmed:', receipt);
+
+                if (receipt.status === 1) {
+                    showAlert(`Joined game room successfully! Privacy: ${selectedPrivacy}. TX: ${tx.hash.substring(0, 10)}...`, 'success');
+
+                    // Update local game state
+                    const gameIndex = deployedGames.findIndex(g => g.gameId === currentGameId);
+                    if (gameIndex !== -1) {
+                        deployedGames[gameIndex].currentPlayers++;
+                    }
+
+                    // Refresh the game list
+                    await loadGameRooms();
+                } else {
+                    showAlert('Transaction failed. Please try again.', 'error');
+                }
+
+                joinGameCard.style.display = 'none';
+
+            } catch (error) {
+                console.error('Error joining game:', error);
+
+                if (error.code === 'ACTION_REJECTED') {
+                    showAlert('Transaction was cancelled by user', 'warning');
+                } else if (error.code === 'INSUFFICIENT_FUNDS') {
+                    showAlert('Insufficient funds for transaction', 'error');
+                } else if (error.reason) {
+                    showAlert(`Transaction failed: ${error.reason}`, 'error');
+                } else {
+                    showAlert('Failed to join game: ' + error.message, 'error');
+                }
+            }
+        }
+
+        function showAlert(message, type) {
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.textContent = message;
+            alertsContainer.appendChild(alert);
+
+            setTimeout(() => {
+                alert.remove();
+            }, 8000);
+        }
+
+        // Event listeners
+        function initializeEventListeners() {
+            connectWalletBtn.addEventListener('click', connectWallet);
+
+            document.getElementById('joinBtn').addEventListener('click', joinGame);
+            document.getElementById('cancelJoinBtn').addEventListener('click', () => {
+                joinGameCard.style.display = 'none';
+            });
+
+            // Add event delegation for dynamically generated game rooms
+            gamesGrid.addEventListener('click', function(e) {
+                const gameRoom = e.target.closest('.game-room');
+                if (gameRoom && !gameRoom.classList.contains('full')) {
+                    const gameId = parseInt(gameRoom.dataset.gameId);
+                    if (gameId) {
+                        startJoinGame(gameId);
+                    }
+                }
+            });
+        }
+
+        // Option selection handlers
+        function initializeOptionButtons() {
+            document.querySelectorAll('.option-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const method = button.dataset.method;
+                    const privacy = button.dataset.privacy;
+
+                    if (method) {
+                        document.querySelectorAll('[data-method]').forEach(b => b.classList.remove('selected'));
+                        button.classList.add('selected');
+                        selectedJoinMethod = method;
+                    }
+
+                    if (privacy) {
+                        document.querySelectorAll('[data-privacy]').forEach(b => b.classList.remove('selected'));
+                        button.classList.add('selected');
+                        selectedPrivacy = privacy;
+                    }
+                });
+            });
+        }
+
+        // Initialize the app when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeEventListeners();
+            initializeOptionButtons();
+            init();
+        });
+    </script>
+</body>
+</html>

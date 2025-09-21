@@ -1,0 +1,43 @@
+{
+  "name": "privacy-social-gaming",
+  "version": "1.0.0",
+  "description": "Privacy Social Gaming - Confidential multiplayer games using Zama FHE protocol",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server . -p 3000 -c-1",
+    "serve": "npx http-server . -p 8080 -c-1",
+    "compile": "cross-env hardhat compile",
+    "deploy": "cross-env hardhat run scripts/deploy.ts --network sepolia",
+    "deploy:local": "cross-env hardhat run scripts/deploy.ts --network localhost",
+    "test": "cross-env hardhat test",
+    "node": "cross-env hardhat node"
+  },
+  "keywords": [
+    "gaming",
+    "privacy",
+    "fhe",
+    "zama",
+    "blockchain",
+    "multiplayer",
+    "web3",
+    "social"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "devDependencies": {
+    "fhevm": "^0.5.0",
+    "hardhat": "^2.24.3",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@typechain/ethers-v6": "^0.5.1",
+    "@typechain/hardhat": "^9.1.0",
+    "@types/node": "^20.11.0",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.1",
+    "ethers": "^6.8.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  }
+}

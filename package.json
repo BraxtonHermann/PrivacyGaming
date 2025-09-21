@@ -1,0 +1,25 @@
+{
+  "name": "privacy-social-gaming",
+  "version": "1.0.0",
+  "description": "Privacy Social Gaming - Confidential multiplayer games using Zama FHE protocol",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server . -p 3000 -c-1",
+    "serve": "npx http-server . -p 8080 -c-1"
+  },
+  "keywords": [
+    "gaming",
+    "privacy",
+    "fhe",
+    "zama",
+    "blockchain",
+    "multiplayer",
+    "web3",
+    "social"
+  ],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
